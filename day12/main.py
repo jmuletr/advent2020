@@ -36,21 +36,36 @@ def left_rotation(position, degree):
     return right_rotation(position, 360 - degree)
 
 
+def get_waypoint(waypoint, action, value):
+    return (
+        waypoint[0] + directions[action][0] * value,
+        waypoint[1] + directions[action][1] * value,
+    )
+
+
+def go_forward(coord, direction, value):
+    return (
+        coord[0] + direction[0] * value,
+        coord[1] + direction[1] * value,
+    )
+
+
+def go_direction(coord, direction, value):
+    return (
+        coord[0] + directions[direction][0] * value,
+        coord[1] + directions[direction][1] * value,
+    )
+
+
 def get_part_1_distance(instructions):
     dr = directions[EAST]
     coord = (0, 0)
 
     for action, value in instructions:
         if action == FORWARD:
-            coord = (
-                coord[0] + dr[0] * value,
-                coord[1] + dr[1] * value,
-            )
+            coord = go_forward(coord, dr, value)
         elif action in directions.keys():
-            coord = (
-                coord[0] + directions[action][0] * value,
-                coord[1] + directions[action][1] * value,
-            )
+            coord = go_direction(coord, action, value)
         elif action == LEFT:
             dr = left_rotation(dr, value)
         elif action == RIGHT:
@@ -65,15 +80,9 @@ def get_part_2_distance(instructions):
 
     for action, value in instructions:
         if action == FORWARD:
-            coord = (
-                coord[0] + waypoint[0] * value,
-                coord[1] + waypoint[1] * value,
-            )
+            coord = go_forward(coord, waypoint, value)
         elif action in directions.keys():
-            waypoint = (
-                waypoint[0] + directions[action][0] * value,
-                waypoint[1] + directions[action][1] * value,
-            )
+            waypoint = get_waypoint(waypoint, action, value)
         elif action == LEFT:
             waypoint = left_rotation(waypoint, value)
         elif action == RIGHT:
@@ -96,4 +105,3 @@ with open("input.txt") as f:
 
     print(get_part_1_distance(extract_data(lines)))
     print(get_part_2_distance(extract_data(lines)))
-
